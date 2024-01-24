@@ -91,9 +91,48 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    # Initialize the frontier
+    start = Node(person=source, parent=None, movie=None)
+    frontier = QueueFrontier()
+    frontier.add(start)
 
-    # TODO
-    raise NotImplementedError
+    checked_people = set()
+
+    while True:
+        # If we end up with an empty frontier, there is no solution
+        if frontier.empty(): return None
+
+        # Take a node from the frontier to analyze
+        node = frontier.remove()
+        checked_people.add(node.get_person())
+
+        # Check if we have found the target node
+        if node.get_person() == target:
+            return form_path(node)
+
+        # If we did not find the target, add the neighbors
+        neighbors = neighbors_for_person(node.get_person())
+        for movie, person in neighbors:
+            if person not in checked_people and not frontier.contains_person(person):
+                frontier.add(Node(person=person, parent=node, movie=movie))
+
+
+def form_path(final_node):
+    # Initiate path
+    path = []
+
+    # Initiate current node
+    current_node = final_node
+
+    # Add the previous node to the path until there is no previous node
+    while current_node.get_parent() != None:
+        # Add node to the path
+        path.insert(0, (current_node.get_movie(), current_node.get_person()))
+
+        # Go one node back in the chain
+        current_node = current_node.get_parent()
+
+    return path
 
 
 def person_id_for_name(name):
