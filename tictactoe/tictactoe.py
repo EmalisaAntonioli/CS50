@@ -124,10 +124,12 @@ def minimax(board):
     """
     if terminal(board): return None
 
+    # Check if the opposition could win in one move and make that move
     check_opposition_ = check_opposition(board)
     if check_opposition_:
         return check_opposition_
 
+    # Else make a move with the most preferred score
     if player(board) == X:
         return max_value(board, -10, 10)[0]
     else:
@@ -136,19 +138,19 @@ def minimax(board):
 def check_opposition(board):
     # Checks if the coming move could be a terminal one for the opposition
     # Return the action that belongs to that
-    no_of_moves = sum(row.count(EMPTY) for row in board)
-    player_ = None
-    if no_of_moves % 2 == 1:
-        player_ = O
-    else:
-        player_ = X
 
+    # Get the opposite player of whose turn it actually is
+    player_ = None
+    player_ = O if player(board) == X else X
+
+    # See if any of the current possible actions could lead to a win for the opposition
     for action in actions(board):
         new_board = copy.deepcopy(board)
         new_board[action[0]][action[1]] = player_
 
         if terminal(new_board): return action
 
+    # Return None if no terminal boards were found
     return None
 
     
@@ -198,57 +200,3 @@ def min_value(board, max_score, min_score):
             break
 
     return best_move
-
-# def minimax(board):
-#     """
-#     Returns the optimal action for the current player on the board.
-#     """
-#     if terminal(board): return None
-
-#     player_ = player(board)
-#     goal = 1 if player_ == X else -1
-
-#     action_scores = check_step(board)
-    
-#     for action, score in action_scores:
-#         if score == goal: return action
-
-#     neutral_moves = []
-#     for action, score in action_scores:
-#         if score == None: neutral_moves.append(action)
-    
-#     if neutral_moves: return random.sample(neutral_moves, 1)[0]
-
-#     for action, score in action_scores:
-#         if score == 0: return action
-
-    
-# def check_step(board):
-#     # Look at all the actions you can see from here and their final results
-#     actions_ = actions(board)
-    
-#     action_scores = []
-
-#     for action in actions_:
-#         new_board = result(board, action)
-#         if terminal(new_board):
-#             score= utility(new_board)
-#             action_scores.append((action, score)) 
-#         action_scores + (check_step(new_board)) 
-
-#     return action_scores
-
-# def get_preferred_result(board, action):
-#     # 
-#     new_board = result(board, action)
-#     if terminal(new_board):
-#         score= utility(new_board)
-#         return action, score
-    
-#     check_step(new_board)
-
-    # for action in actions_:
-    #     new_board = result(board, action)
-    #     score = utility(new_board) if terminal(new_board) else None
-    #     action_scores.append((action, score))
-
